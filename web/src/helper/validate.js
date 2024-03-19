@@ -13,6 +13,29 @@ export async function passwordValidate(values) {
     return errors;
 }
 
+/** validate reset password */
+export async function resetPasswordValidation(values) {
+    const errors = passwordVerify({}, values);
+
+    if (values.password !== values.confirm_pwd) {
+        errors.exist = toast("Password does not match");
+    }
+    return errors;
+}
+
+/** validate register */
+export async function registerValidation(values){
+    const errors = usernameVerify({}, values);
+    passwordVerify(errors, values);
+    emailVerify(errors, values);
+    return errors;
+}
+
+/** profile validation */
+export async function profileValidation(values){
+    const errors = firstNameVerify({}, values);
+    return errors;
+}
 
 
 /** validate password */
@@ -40,6 +63,29 @@ function usernameVerify(error = [], values) {
         error.username = toast.error('Username Required...!');
     } else if (values.username.includes(" ")) {
         error.username = toast.error('Invalid Username...!');
+    }
+    return error;
+}
+
+/** validate first name */
+
+function firstNameVerify(error = [], values) {
+    if(!values.firstName) {
+        error.firstName = toast.error('First name Required...!');
+    } else if (values.username.includes(" ")) {
+        error.firstName = toast.error('Invalid first name...!');
+    }
+    return error;
+}
+
+/** validate email */
+function emailVerify(error ={}, values){
+    if(!values.email){
+        error.email = toast.error("Email Required...!");
+    }else if(values.email.includes(" ")){
+        error.email = toast.error("Wrong Email...!")
+    }else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)){
+        error.email = toast.error("Invalid email address...!")
     }
     return error;
 }
